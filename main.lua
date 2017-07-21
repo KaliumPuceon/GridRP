@@ -11,63 +11,87 @@ TILE_WIDTH = 128
 PORT_X_IN = 16
 PORT_Y_IN = 16
 
-portHeight = 10*TILE_WIDTH
-portWidth = 12*TILE_WIDTH
-
-tile = {
-
-    x = 0,
-    y = 0,
-    terrain = nil,
-    walkable = true,
-    rot = 0,
-    img = nil
-
-}
-
-board = {}
-
-testimg = love.graphics.newImage("assets/tiles/floors/plainGrass.png")
+portHeight = 4
+portWidth = 6
 
 function getTileX(x)
+
+    return (x*TILE_WIDTH)+PORT_X_IN
 
 end
 
 function getTileY(y)
 
+    return (y*TILE_WIDTH)+PORT_Y_IN
+
 end
 
-function drawTiles(area, startx, starty)
+function drawTiles(area,startx, starty)
 
     for x=startx,startx+portWidth,1 do
         for y=starty,starty+portHeight,1 do
             
-            love.graphics.draw(testimg,(x*TILE_WIDTH)+PORT_X_IN,(y*TILE_WIDTH)+PORT_Y_IN)
+            love.graphics.draw(testimg,getTileX(x-startx),getTileY(y-starty))
 
         end
     end
 
 end
 
-function getNearestCorner(X,Y)
+function getNearestCorner(x,y)
+
+    output = {
+    xout = math.floor(((x-PORT_X_IN)/TILE_WIDTH)+0.5),
+    yout = math.floor(((y-PORT_Y_IN)/TILE_WIDTH)+0.5)
+    }
+    
+    return (output)
 
 end
 
-function getNearestBlock(X,Y)
+function getNearestBlock(x,y)
 
+    return getNearestCorner(x-(TILE_WIDTH/2),y-(TILE_WIDTH/2))
     
 end
 
 function love.load(arg)
 
+    board = {}
+    testimg = love.graphics.newImage("assets/tiles/floors/plainGrass.png")
+
+    tile = {
+
+        x = 0,
+        y = 0,
+        terrain = nil,
+        walkable = true,
+        rot = 0,
+        img = nil
+
+    }
 
 end
 
 function love.update(dt)
 
+    corner = getNearestCorner(love.mouse.getX(),love.mouse.getY())
+    cornerX = corner.xout
+    cornerY = corner.yout
+
+    print("closest corner: " .. tostring(cornerX).." ".. tostring(cornerY))
+
+    nearBlock = getNearestBlock(love.mouse.getX(),love.mouse.getY())
+    blockX = nearBlock.xout
+    blockY = nearBlock.yout
+
+    print("closest block: " .. tostring(blockX).." ".. tostring(blockY))
+
 end
 
 function love.draw(dt)
+
+    drawTiles(0,3,8)
 
 end
 
