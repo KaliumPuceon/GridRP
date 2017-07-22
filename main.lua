@@ -6,58 +6,61 @@
 
 -- warning: I have no idea what I am doing
 
-TILE_WIDTH = 128
+TILE_WIDTH = 128 --pixel width of tileset
 
-PORT_X_IN = 16
-PORT_Y_IN = 16
+PORT_X_IN = 16 --border on map window in x
+PORT_Y_IN = 16 --border on map window in y
 
-portHeight = 4
-portWidth = 6
+portHeight = 5 --tile height of window
+portWidth = 7 --tile width of window
 
-function getTileX(x)
+portx = 4 -- which block is in the top left corner x
+porty = 10 -- which block is in the top left corner y
 
-    return (x*TILE_WIDTH)+PORT_X_IN
+function getTileX(x) --get x placement value for a given tile
 
-end
-
-function getTileY(y)
-
-    return (y*TILE_WIDTH)+PORT_Y_IN
+    return ((x-portx)*TILE_WIDTH)+PORT_X_IN
 
 end
 
-function drawTiles(area,startx, starty)
+function getTileY(y) --get y placement value for a given tile
+
+    return ((y-porty)*TILE_WIDTH)+PORT_Y_IN
+
+end
+
+function drawTiles(area,startx, starty) --draw area starting at given coords
 
     for x=startx,startx+portWidth,1 do
         for y=starty,starty+portHeight,1 do
             
-            love.graphics.draw(testimg,getTileX(x-startx),getTileY(y-starty))
+            love.graphics.draw(testimg,getTileX(x),getTileY(y))
 
         end
     end
 
 end
 
-function getNearestCorner(x,y)
+function getNearestCorner(x,y,startx,starty) --find nearest corner to point
 
     output = {
-    xout = math.floor(((x-PORT_X_IN)/TILE_WIDTH)+0.5),
-    yout = math.floor(((y-PORT_Y_IN)/TILE_WIDTH)+0.5)
+    xout = math.floor(((x-PORT_X_IN)/TILE_WIDTH)+0.5)+startx,
+    yout = math.floor(((y-PORT_Y_IN)/TILE_WIDTH)+0.5)+starty
     }
     
     return (output)
 
 end
 
-function getNearestBlock(x,y)
+function getNearestBlock(x,y,startx,starty) --nearest block coord to point
 
-    return getNearestCorner(x-(TILE_WIDTH/2),y-(TILE_WIDTH/2))
+    return getNearestCorner(x-(TILE_WIDTH/2),y-(TILE_WIDTH/2),startx,starty)
     
 end
 
 function love.load(arg)
 
-    board = {}
+    board = {{}}
     testimg = love.graphics.newImage("assets/tiles/floors/plainGrass.png")
 
     tile = {
@@ -75,13 +78,13 @@ end
 
 function love.update(dt)
 
-    corner = getNearestCorner(love.mouse.getX(),love.mouse.getY())
+    corner = getNearestCorner(love.mouse.getX(),love.mouse.getY(),portx,porty)
     cornerX = corner.xout
     cornerY = corner.yout
 
     print("closest corner: " .. tostring(cornerX).." ".. tostring(cornerY))
 
-    nearBlock = getNearestBlock(love.mouse.getX(),love.mouse.getY())
+    nearBlock = getNearestBlock(love.mouse.getX(),love.mouse.getY(),portx,porty)
     blockX = nearBlock.xout
     blockY = nearBlock.yout
 
@@ -91,7 +94,7 @@ end
 
 function love.draw(dt)
 
-    drawTiles(0,3,8)
+    drawTiles(0,portx,porty)
 
 end
 
