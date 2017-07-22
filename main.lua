@@ -6,16 +6,19 @@
 
 -- warning: I have no idea what I am doing
 
+-- I'm gonna guess that globals are bad practice but I'm also gonna guess that I 
+-- don't actually care. 
+
 TILE_WIDTH = 128 --pixel width of tileset
 
 PORT_X_IN = 16 --border on map window in x
 PORT_Y_IN = 16 --border on map window in y
 
 portHeight = 5 --tile height of window
-portWidth = 7 --tile width of window
+portWidth = 5 --tile width of window
 
-portx = 4 -- which block is in the top left corner x
-porty = 10 -- which block is in the top left corner y
+portx = 1 -- which block is in the top left corner x
+porty = 1 -- which block is in the top left corner y
 
 function getTileX(x) --get x placement value for a given tile
 
@@ -34,7 +37,11 @@ function drawTiles(area,startx, starty) --draw area starting at given coords
     for x=startx,startx+portWidth,1 do
         for y=starty,starty+portHeight,1 do
             
-            love.graphics.draw(testimg,getTileX(x),getTileY(y))
+            if not (area[x][y] == nil) then
+
+                love.graphics.draw(area[x][y].img)
+            end
+            --love.graphics.draw(testimg,getTileX(x),getTileY(y))
 
         end
     end
@@ -60,19 +67,44 @@ end
 
 function love.load(arg)
 
-    board = {{}}
+    board = {}
     testimg = love.graphics.newImage("assets/tiles/floors/plainGrass.png")
+    
+    unifont = love.graphics.newFont("assets/fonts/unifont.ttf",16)
 
     tile = {
 
-        x = 0,
-        y = 0,
+        x = 1,
+        y = 1,
         terrain = nil,
         walkable = true,
         rot = 0,
-        img = nil
+        img = testimg
 
     }
+
+    for x=1,8,1 do
+
+        board[x] = {}
+        
+        for y=1,8,1 do
+            
+            board[x][y] = tile
+            board[x][y].x = x
+            board[x][y].y = y
+            board[x][y].img = testimg
+
+        end
+    end
+
+    for i,line in pairs(board) do
+        for j,point in pairs(line) do
+        
+            io.write(tostring(point.x).. " " ..tostring(point.y))
+
+        end
+        print()
+    end
 
 end
 
@@ -82,19 +114,21 @@ function love.update(dt)
     cornerX = corner.xout
     cornerY = corner.yout
 
-    print("closest corner: " .. tostring(cornerX).." ".. tostring(cornerY))
+    cornerbug=("cornr: " .. tostring(cornerX).." ".. tostring(cornerY))
 
     nearBlock = getNearestBlock(love.mouse.getX(),love.mouse.getY(),portx,porty)
     blockX = nearBlock.xout
     blockY = nearBlock.yout
 
-    print("closest block: " .. tostring(blockX).." ".. tostring(blockY))
+    blockbug=("block: " .. tostring(blockX).." ".. tostring(blockY))
 
 end
 
 function love.draw(dt)
 
-    drawTiles(0,portx,porty)
+    drawTiles(board,portx,porty)
+    love.graphics.setFont(unifont)
+    love.graphics.print (  { {255,0,255} ,cornerbug .. "\n" .. blockbug},20,20)
 
 end
 
