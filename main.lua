@@ -11,14 +11,14 @@
 
 TILE_WIDTH = 128 --pixel width of tileset
 
-PORT_X_IN = 16 --border on map window in x
-PORT_Y_IN = 16 --border on map window in y
+PORT_X_IN = 8 --border on map window in x
+PORT_Y_IN = 8 --border on map window in y
 
 portHeight = 5 --tile height of window
 portWidth = 5 --tile width of window
 
-portx = 1 -- which block is in the top left corner x
-porty = 1 -- which block is in the top left corner y
+portx = 0 -- which block is in the top left corner x
+porty = 0 -- which block is in the top left corner y
 
 function getTileX(x) --get x placement value for a given tile
 
@@ -39,9 +39,8 @@ function drawTiles(area,startx, starty) --draw area starting at given coords
             
             if not (area[x][y] == nil) then
 
-                love.graphics.draw(area[x][y].img)
+                love.graphics.draw(area[x][y].img,getTileX(x),getTileY(y))
             end
-            --love.graphics.draw(testimg,getTileX(x),getTileY(y))
 
         end
     end
@@ -65,6 +64,44 @@ function getNearestBlock(x,y,startx,starty) --nearest block coord to point
     
 end
 
+-- Tile object stuff goes here -------------------------------------------------
+
+tile = {
+
+    terrain = nil,
+    walkable = true,
+    rot = 0,
+    img = testimg
+
+}
+
+tile_mt = {
+
+    terrain = nil,
+    walkable = false,
+    rot = 0,
+    img = "assets/tiles/walls/grassCrossWall.png"
+
+}
+
+function tile_mt:__index(key)
+    return self.__baseclass[key]
+end
+
+tile = setmetatable({ __baseclass = {} }, tile_mt)
+
+function tile:new(...)
+    local out = {}
+    out.__baseclass = self
+    setmetatable(out,getmetatable(self))
+    if out.init then
+        out:init(...)
+    end
+    return out
+end
+
+-- Tile object stuff ends here -------------------------------------------------
+
 function love.load(arg)
 
     board = {}
@@ -72,41 +109,21 @@ function love.load(arg)
     
     unifont = love.graphics.newFont("assets/fonts/unifont.ttf",16)
 
-    tile = {
-
-        x = 1,
-        y = 1,
-        terrain = nil,
-        walkable = true,
-        rot = 0,
-        img = testimg
-
-    }
-
-    for x=1,8,1 do
+    for x=0,64,1 do
 
         board[x] = {}
         
-        for y=1,8,1 do
+        for y=0,64,1 do
             
-            board[x][y] = tile
-            board[x][y].x = x
-            board[x][y].y = y
+            board[x][y] = tile:new()
             board[x][y].img = testimg
 
         end
     end
 
-    for i,line in pairs(board) do
-        for j,point in pairs(line) do
-        
-            io.write(tostring(point.x).. " " ..tostring(point.y))
-
-        end
-        print()
-    end
-
 end
+
+selImg = love.graphics.newImage("assets/tiles/walls/grassPillar.png")
 
 function love.update(dt)
 
@@ -121,6 +138,11 @@ function love.update(dt)
     blockY = nearBlock.yout
 
     blockbug=("block: " .. tostring(blockX).." ".. tostring(blockY))
+
+    if love.mouse.isDown(1) then
+        board[blockX][blockY].img = selImg
+    end
+
 
 end
 
