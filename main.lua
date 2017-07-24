@@ -156,6 +156,9 @@ function love.update(dt)
 
     if love.keyboard.isDown("=") then
         scale_factor = scale_factor + 0.01
+        portHeight = portBaseHeight/scale_factor
+        portWidth = portBaseWidth/scale_factor
+
     elseif love.keyboard.isDown("-") then
         scale_factor = scale_factor - 0.01
         portHeight = portBaseHeight/scale_factor
