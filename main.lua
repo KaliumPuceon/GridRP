@@ -156,6 +156,8 @@ function love.update(dt)
 
     blockbug=("block: " .. tostring(blockX).." ".. tostring(blockY))
 
+    scalebug=("scale: " .. tostring(scale_factor))
+
     if love.mouse.isDown(1) and blockX >= portx and blockX <= portx+portWidth
         and blockY >= porty and blockY <= porty+portHeight then
         board[blockX][blockY].img = selImg
@@ -165,15 +167,16 @@ function love.update(dt)
         love.load()
     end
 
-    if love.keyboard.isDown("=") then
-        scale_factor = scale_factor + 0.01
-        portHeight = math.ceil(portBaseHeight/scale_factor)
-        portWidth = math.ceil(portBaseWidth/scale_factor)
+    if love.keyboard.isDown("=") and scale_factor < 2 then
+        scale_factor = scale_factor + 0.5 * dt
+        portHeight = math.ceil(portBaseHeight/scale_factor) + 1/scale_factor
+        portWidth = math.ceil(portBaseWidth/scale_factor) + 1/scale_factor
 
-    elseif love.keyboard.isDown("-") then
-        scale_factor = scale_factor - 0.01
-        portHeight = math.ceil(portBaseHeight/scale_factor)
-        portWidth = math.ceil(portBaseWidth/scale_factor)
+    elseif love.keyboard.isDown("-") and scale_factor > 0.2 then
+        
+        scale_factor = scale_factor - 0.5*dt
+        portHeight = math.ceil(portBaseHeight/scale_factor) + 1/scale_factor
+        portWidth = math.ceil(portBaseWidth/scale_factor) + 1/scale_factor
     end
 
     if (ticks <=0.01) then
@@ -215,7 +218,7 @@ function love.draw(dt)
     love.graphics.setColor(255,255,255)
 
     love.graphics.setFont(unifont)
-    love.graphics.print (  { {255,0,255} ,cornerbug .. "\n" .. blockbug},20,20)
+    love.graphics.print (  { {255,0,255} ,cornerbug .. "\n" .. blockbug.."\n"..scalebug},20,20)
 
 end
 
