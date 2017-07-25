@@ -15,7 +15,10 @@ scale_factor = 1
 PORT_X_IN = 8 --border on map window in x
 PORT_Y_IN = 8 --border on map window in y
 
-portBaseHeight = 3
+mapWidth = 32
+mapHeight = 32
+
+portBaseHeight = 5
 portBaseWidth = 7
 portHeight = portBaseHeight --tile height of window
 portWidth = portBaseWidth--tile width of window
@@ -40,7 +43,7 @@ function drawTiles(area,startx, starty) --draw area starting at given coords
     for x=startx,startx+portWidth,1 do
         for y=starty,starty+portHeight,1 do
             
-            if (x>=0 and x <=1024 and y >= 0 and y <= 1024) then
+            if (x>=0 and x <=mapWidth and y >= 0 and y <= mapHeight) then
 
                 love.graphics.draw(area[x][y].img,getTileX(x),getTileY(y),
                 area[x][y].rot,scale_factor)
@@ -115,11 +118,11 @@ function love.load(arg)
     
     unifont = love.graphics.newFont("assets/fonts/unifont.ttf",16)
 
-    for x=0,1024,1 do
+    for x=0,mapWidth,1 do
 
         board[x] = {}
         
-        for y=0,1024,1 do
+        for y=0,mapHeight,1 do
             
             board[x][y] = tile:new()
             board[x][y].img = testimg
@@ -132,7 +135,7 @@ function love.load(arg)
 
 end
 
-selImg = love.graphics.newImage("assets/tiles/walls/grassPillar.png")
+selImg = love.graphics.newImage("assets/tiles/special/void.png")
 
 function sign(x)
     if x >= 0 then
@@ -158,8 +161,9 @@ function love.update(dt)
 
     scalebug=("scale: " .. tostring(scale_factor))
 
-    if love.mouse.isDown(1) and blockX >= portx and blockX <= portx+portWidth
-        and blockY >= porty and blockY <= porty+portHeight then
+    if love.mouse.isDown(1) and blockX >= portx and blockX <= portx+math.floor(portWidth)
+        and blockY >= porty and blockY <= porty+math.floor(portHeight) and
+        blockX >=0 and blockY >= 0 and blockX <= mapWidth and blockY <= mapHeight then
         board[blockX][blockY].img = selImg
     end
 
@@ -182,16 +186,16 @@ function love.update(dt)
     if (ticks <=0.01) then
         if love.keyboard.isDown("up") then
             porty = porty-(1)
-            ticks = 0.2
+            ticks = 0.1
         elseif love.keyboard.isDown("down") then
             porty = porty+(1)
-            ticks = 0.2
+            ticks = 0.1
         elseif love.keyboard.isDown("left") then
             portx = portx-(1)
-            ticks = 0.2
+            ticks = 0.1
         elseif love.keyboard.isDown("right") then
             portx = portx+(1)
-            ticks = 0.2
+            ticks = 0.1
         end
     elseif ticks >0 then
         ticks = ticks - dt
@@ -209,16 +213,21 @@ end
 function love.draw(dt)
 
 
-    love.graphics.setColor(255,100,100)
+    love.graphics.setColor(50,50,50)
     love.graphics.rectangle("fill",0,0,1600,900)
+    
     love.graphics.setColor(255,255,255)
     drawTiles(board,portx,porty)
+    
     love.graphics.setColor(50,50,50)
     drawMapMask((portBaseWidth+1)*TILE_WIDTH,(portBaseHeight+1)*TILE_WIDTH)
+    
     love.graphics.setColor(255,255,255)
 
     love.graphics.setFont(unifont)
     love.graphics.print (  { {255,0,255} ,cornerbug .. "\n" .. blockbug.."\n"..scalebug},20,20)
+
+    love.graphics.rectangle("line",PORT_X_IN,PORT_Y_IN,(portBaseWidth+1)*TILE_WIDTH-PORT_Y_IN,(1+portBaseHeight)*TILE_WIDTH-PORT_Y_IN)
 
 end
 
