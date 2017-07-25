@@ -18,7 +18,7 @@ PORT_Y_IN = 8 --border on map window in y
 mapWidth = 32
 mapHeight = 32
 
-portBaseHeight = 5
+portBaseHeight = 4
 portBaseWidth = 7
 portHeight = portBaseHeight --tile height of window
 portWidth = portBaseWidth--tile width of window
@@ -52,6 +52,36 @@ function drawTiles(area,startx, starty) --draw area starting at given coords
 
         end
     end
+
+end
+
+panel1 = {
+
+    x = getPanelX,
+    y = 0,
+    buttonMesh = {}
+
+}
+
+function getPanelX()
+    return(portBaseWidth+1)*TILE_WIDTH
+end
+
+function getPanelY()
+    return(portBaseHeight+1)*TILE_WIDTH
+end
+
+function drawPanel1(x,y)
+
+    love.graphics.setColor(125,0,125)
+    love.graphics.rectangle("fill",x,y,1600-x,getPanelY())
+    love.graphics.setColor(255,255,255)
+
+end
+
+function drawPanel2(x,y)
+
+
 
 end
 
@@ -115,7 +145,7 @@ function love.load(arg)
 
     board = {}
     testimg = love.graphics.newImage("assets/tiles/floors/plainGrass.png")
-    
+
     unifont = love.graphics.newFont("assets/fonts/unifont.ttf",16)
 
     for x=0,mapWidth,1 do
@@ -190,7 +220,8 @@ function love.update(dt)
         elseif love.keyboard.isDown("down") then
             porty = porty+(1)
             ticks = 0.1
-        elseif love.keyboard.isDown("left") then
+        end
+        if love.keyboard.isDown("left") then
             portx = portx-(1)
             ticks = 0.1
         elseif love.keyboard.isDown("right") then
@@ -200,6 +231,10 @@ function love.update(dt)
     elseif ticks >0 then
         ticks = ticks - dt
     end
+
+    --love.timer.sleep(0.01) --debug framerate editing
+
+    fpsbug = "FPS: " .. tostring(love.timer.getFPS())
 
 end
 
@@ -225,9 +260,12 @@ function love.draw(dt)
     love.graphics.setColor(255,255,255)
 
     love.graphics.setFont(unifont)
-    love.graphics.print (  { {255,0,255} ,cornerbug .. "\n" .. blockbug.."\n"..scalebug},20,20)
+    
+    -- next line is my garbage monolithic debug print in bright purple ---------
+    love.graphics.print (  { {255,0,255} ,cornerbug .. "\n" .. blockbug .. "\n" .. scalebug .. "\n" .. fpsbug},20,20)
+
+    drawPanel1(getPanelX(),0)
 
     love.graphics.rectangle("line",PORT_X_IN,PORT_Y_IN,(portBaseWidth+1)*TILE_WIDTH-PORT_Y_IN,(1+portBaseHeight)*TILE_WIDTH-PORT_Y_IN)
 
 end
-
