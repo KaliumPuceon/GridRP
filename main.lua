@@ -9,6 +9,11 @@
 -- I'm gonna guess that globals are bad practice but I'm also gonna guess that I 
 -- don't actually care. 
 
+tile = require 'classes.tile'
+gridmap = require 'classes.gridmap'
+
+--[[
+
 TILE_WIDTH = 128 --pixel width of tileset
 scale_factor = 1
 
@@ -55,6 +60,8 @@ function drawTiles(area,startx, starty) --draw area starting at given coords
 
 end
 
+]]
+
 panel1 = {
 
     x = getPanelX,
@@ -88,8 +95,8 @@ end
 function getNearestCorner(x,y,startx,starty) --find nearest corner to point
 
     output = {
-    xout = math.floor(((x-PORT_X_IN)/(TILE_WIDTH*scale_factor))+0.5)+startx,
-    yout = math.floor(((y-PORT_Y_IN)/(TILE_WIDTH*scale_factor))+0.5)+starty
+    xout = math.floor(((x-gridmap.PORT_X_IN)/(gridmap.TILE_WIDTH*gridmap.scale))+0.5)+startx,
+    yout = math.floor(((y-gridmap.PORT_Y_IN)/(gridmap.TILE_WIDTH*gridmap.scale))+0.5)+starty
     }
     
     return (output)
@@ -98,48 +105,10 @@ end
 
 function getNearestBlock(x,y,startx,starty) --nearest block coord to point
 
-    return getNearestCorner(x-((TILE_WIDTH*scale_factor)/2),y-((TILE_WIDTH*scale_factor)/2)
+    return getNearestCorner(x-((gridmap.TILE_WIDTH*gridmap.scale)/2),y-((gridmap.TILE_WIDTH*gridmap.scale)/2)
     ,startx,starty)
     
 end
-
--- Tile object stuff goes here -------------------------------------------------
-
-tile = {
-
-    terrain = nil,
-    walkable = true,
-    rot = 0,
-    img = testimg
-
-}
-
-tile_mt = {
-
-    terrain = nil,
-    walkable = false,
-    rot = 0,
-    img = "assets/tiles/walls/grassCrossWall.png"
-
-}
-
-function tile_mt:__index(key)
-    return self.__baseclass[key]
-end
-
-tile = setmetatable({ __baseclass = {} }, tile_mt)
-
-function tile:new(...)
-    local out = {}
-    out.__baseclass = self
-    setmetatable(out,getmetatable(self))
-    if out.init then
-        out:init(...)
-    end
-    return out
-end
-
--- Tile object stuff ends here -------------------------------------------------
 
 function love.load(arg)
 
@@ -148,11 +117,11 @@ function love.load(arg)
 
     unifont = love.graphics.newFont("assets/fonts/unifont.ttf",16)
 
-    for x=0,mapWidth,1 do
+    for x=0,gridmap.mapWidth,1 do
 
         board[x] = {}
         
-        for y=0,mapHeight,1 do
+        for y=0,gridmap.mapHeight,1 do
             
             board[x][y] = tile:new()
             board[x][y].img = testimg
@@ -177,19 +146,19 @@ end
 
 function love.update(dt)
 
-    corner = getNearestCorner(love.mouse.getX(),love.mouse.getY(),portx,porty)
+    corner = getNearestCorner(love.mouse.getX(),love.mouse.getY(),gridmap.x,gridmap.y)
     cornerX = corner.xout
     cornerY = corner.yout
 
     cornerbug=("cornr: " .. tostring(cornerX).." ".. tostring(cornerY))
 
-    nearBlock = getNearestBlock(love.mouse.getX(),love.mouse.getY(),portx,porty)
+    nearBlock = getNearestBlock(love.mouse.getX(),love.mouse.getY(),gridmap.x,gridmap.y)
     blockX = nearBlock.xout
     blockY = nearBlock.yout
 
     blockbug=("block: " .. tostring(blockX).." ".. tostring(blockY))
 
-    scalebug=("scale: " .. tostring(scale_factor))
+    scalebug=("scale: " .. tostring(gridmap.scale))
 
     if love.mouse.isDown(1) and blockX >= portx and blockX <= portx+math.floor(portWidth)
         and blockY >= porty and blockY <= porty+math.floor(portHeight) and
@@ -201,6 +170,7 @@ function love.update(dt)
         love.load()
     end
 
+    --[[
     if love.keyboard.isDown("=") and scale_factor < 2 then
         scale_factor = scale_factor + 0.5 * dt
         portHeight = math.ceil(portBaseHeight/scale_factor) + 1/scale_factor
@@ -231,8 +201,10 @@ function love.update(dt)
     elseif ticks >0 then
         ticks = ticks - dt
     end
-
+    ]]
     --love.timer.sleep(0.01) --debug framerate editing
+
+    ticks = gridmap:update(dt,ticks)
 
     fpsbug = "FPS: " .. tostring(love.timer.getFPS())
 
@@ -252,10 +224,12 @@ function love.draw(dt)
     love.graphics.rectangle("fill",0,0,1600,900)
     
     love.graphics.setColor(255,255,255)
-    drawTiles(board,portx,porty)
+    --drawTiles(board,portx,porty)
+    --
+    gridmap:drawMap(board)
     
     love.graphics.setColor(50,50,50)
-    drawMapMask((portBaseWidth+1)*TILE_WIDTH,(portBaseHeight+1)*TILE_WIDTH)
+    --drawMapMask((portBaseWidth+1)*TILE_WIDTH,(portBaseHeight+1)*TILE_WIDTH)
     
     love.graphics.setColor(255,255,255)
 
@@ -264,8 +238,8 @@ function love.draw(dt)
     -- next line is my garbage monolithic debug print in bright purple ---------
     love.graphics.print (  { {255,0,255} ,cornerbug .. "\n" .. blockbug .. "\n" .. scalebug .. "\n" .. fpsbug},20,20)
 
-    drawPanel1(getPanelX(),0)
+    --drawPanel1(getPanelX(),0)
 
-    love.graphics.rectangle("line",PORT_X_IN,PORT_Y_IN,(portBaseWidth+1)*TILE_WIDTH-PORT_Y_IN,(1+portBaseHeight)*TILE_WIDTH-PORT_Y_IN)
+    --love.graphics.rectangle("line",PORT_X_IN,PORT_Y_IN,(portBaseWidth+1)*TILE_WIDTH-PORT_Y_IN,(1+portBaseHeight)*TILE_WIDTH-PORT_Y_IN)
 
 end
