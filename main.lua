@@ -12,56 +12,6 @@
 tile = require 'classes.tile'
 gridmap = require 'classes.gridmap'
 
---[[
-
-TILE_WIDTH = 128 --pixel width of tileset
-scale_factor = 1
-
-PORT_X_IN = 8 --border on map window in x
-PORT_Y_IN = 8 --border on map window in y
-
-mapWidth = 32
-mapHeight = 32
-
-portBaseHeight = 4
-portBaseWidth = 7
-portHeight = portBaseHeight --tile height of window
-portWidth = portBaseWidth--tile width of window
-
-portx = 0 -- which block is in the top left corner x
-porty = 0 -- which block is in the top left corner y
-
-function getTileX(x) --get x placement value for a given tile
-
-    return ((x-portx)*TILE_WIDTH*scale_factor)+PORT_X_IN
-
-end
-
-function getTileY(y) --get y placement value for a given tile
-
-    return ((y-porty)*TILE_WIDTH*scale_factor)+PORT_Y_IN
-
-end
-
-function drawTiles(area,startx, starty) --draw area starting at given coords
-
-    for x=startx,startx+portWidth,1 do
-        for y=starty,starty+portHeight,1 do
-            
-            if (x>=0 and x <=mapWidth and y >= 0 and y <= mapHeight) then
-
-                love.graphics.draw(area[x][y].img,getTileX(x),getTileY(y),
-                area[x][y].rot,scale_factor)
-
-            end
-
-        end
-    end
-
-end
-
-]]
-
 panel1 = {
 
     x = getPanelX,
@@ -69,6 +19,9 @@ panel1 = {
     buttonMesh = {}
 
 }
+
+WINDOW_WIDTH = 1600
+WINDOW_HEIGHT = 900
 
 function getPanelX()
     return(portBaseWidth+1)*TILE_WIDTH
@@ -81,14 +34,12 @@ end
 function drawPanel1(x,y)
 
     love.graphics.setColor(125,0,125)
-    love.graphics.rectangle("fill",x,y,1600-x,getPanelY())
+    love.graphics.rectangle("fill",x,y,WINDOW_WIDTH-x,getPanelY())
     love.graphics.setColor(255,255,255)
 
 end
 
 function drawPanel2(x,y)
-
-
 
 end
 
@@ -176,50 +127,9 @@ function love.update(dt)
         love.load()
     end
 
-    --[[
-    if love.keyboard.isDown("=") and scale_factor < 2 then
-        scale_factor = scale_factor + 0.5 * dt
-        portHeight = math.ceil(portBaseHeight/scale_factor) + 1/scale_factor
-        portWidth = math.ceil(portBaseWidth/scale_factor) + 1/scale_factor
-
-    elseif love.keyboard.isDown("-") and scale_factor > 0.2 then
-        
-        scale_factor = scale_factor - 0.5*dt
-        portHeight = math.ceil(portBaseHeight/scale_factor) + 1/scale_factor
-        portWidth = math.ceil(portBaseWidth/scale_factor) + 1/scale_factor
-    end
-
-    if (ticks <=0.01) then
-        if love.keyboard.isDown("up") then
-            porty = porty-(1)
-            ticks = 0.1
-        elseif love.keyboard.isDown("down") then
-            porty = porty+(1)
-            ticks = 0.1
-        end
-        if love.keyboard.isDown("left") then
-            portx = portx-(1)
-            ticks = 0.1
-        elseif love.keyboard.isDown("right") then
-            portx = portx+(1)
-            ticks = 0.1
-        end
-    elseif ticks >0 then
-        ticks = ticks - dt
-    end
-    ]]
-    --love.timer.sleep(0.01) --debug framerate editing
-
     ticks = gridmap:update(dt,ticks)
 
     fpsbug = "FPS: " .. tostring(love.timer.getFPS())
-
-end
-
-function drawMapMask(width,height)
-
-    love.graphics.rectangle("fill",width,PORT_Y_IN,1600-width,900)
-    love.graphics.rectangle("fill",PORT_X_IN,height,1600,900-height)
 
 end
 
@@ -227,17 +137,17 @@ function love.draw(dt)
 
 
     love.graphics.setColor(50,50,50)
-    love.graphics.rectangle("fill",0,0,1600,900)
+    love.graphics.rectangle("fill",0,0,WINDOW_WIDTH,WINDOW_HEIGHT)
     
     love.graphics.setColor(255,255,255)
-    --drawTiles(board,portx,porty)
-    --
     gridmap:drawMap(board)
     
     love.graphics.setColor(50,50,50)
-    --drawMapMask((portBaseWidth+1)*TILE_WIDTH,(portBaseHeight+1)*TILE_WIDTH)
+    gridmap:drawMapMask(WINDOW_WIDTH,WINDOW_HEIGHT)
     
     love.graphics.setColor(255,255,255)
+
+    
 
     love.graphics.setFont(unifont)
     

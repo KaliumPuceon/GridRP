@@ -14,8 +14,8 @@ local gridmap = {
     mapWidth = 32,
     mapHeight = 32,
 
-    portBaseWidth = 4,
-    portBaseHeight = 7,
+    portBaseHeight = 4,
+    portBaseWidth = 7,
     portHeight = 4,
     portWidth = 7,
 
@@ -36,6 +36,29 @@ function gridmap:getTileY(yin)
 
 end
 
+function gridmap:drawMapMask(pane_width,pane_height)
+
+    width = (self.portBaseWidth+1)*self.TILE_WIDTH+self.PORT_X_IN
+    height = (self.portBaseHeight+1)*self.TILE_WIDTH+self.PORT_Y_IN
+
+    love.graphics.rectangle(
+        "fill",
+        width,
+        self.PORT_Y_IN,
+        pane_width-width,
+        pane_height
+    )
+    
+    love.graphics.rectangle(
+        "fill",
+        self.PORT_X_IN,
+        height,
+        pane_width,
+        pane_height-height
+    )
+
+end
+
 function gridmap:drawMap(area)
 
     startx = gridmap.x
@@ -53,6 +76,13 @@ function gridmap:drawMap(area)
             end
         end
     end
+
+    
+
+    love.graphics.rectangle("line",gridmap.PORT_X_IN,gridmap.PORT_Y_IN,
+    (gridmap.portBaseWidth+1)*gridmap.TILE_WIDTH,(gridmap.portBaseHeight+1)*gridmap.TILE_WIDTH)
+    
+    
 end
 
 function gridmap:update(dt,ticks)
@@ -62,7 +92,7 @@ function gridmap:update(dt,ticks)
         gridmap.portHeight = math.ceil(gridmap.portBaseHeight/gridmap.scale) + 1/gridmap.scale
         gridmap.portWidth = math.ceil(gridmap.portBaseWidth/gridmap.scale) + 1/gridmap.scale
 
-    elseif love.keyboard.isDown("-") and gridmap.scale > 0.2 then
+    elseif love.keyboard.isDown("-") and gridmap.scale > 0.1 then
         
         gridmap.scale = gridmap.scale - 0.5*dt
         gridmap.portHeight = math.ceil(gridmap.portBaseHeight/gridmap.scale) + 1/gridmap.scale
