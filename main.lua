@@ -160,9 +160,15 @@ function love.update(dt)
 
     scalebug=("scale: " .. tostring(gridmap.scale))
 
-    if love.mouse.isDown(1) and blockX >= portx and blockX <= portx+math.floor(portWidth)
-        and blockY >= porty and blockY <= porty+math.floor(portHeight) and
-        blockX >=0 and blockY >= 0 and blockX <= mapWidth and blockY <= mapHeight then
+    if love.mouse.isDown(1) and
+        blockX >= gridmap.x and
+        blockX <= gridmap.x+math.floor(gridmap.portWidth) and 
+        blockY >= gridmap.y and 
+        blockY <= gridmap.y+math.floor(gridmap.portHeight) and
+        blockX >=0 and 
+        blockY >= 0 and 
+        blockX <= gridmap.mapWidth and 
+        blockY <= gridmap.mapHeight then
         board[blockX][blockY].img = selImg
     end
 

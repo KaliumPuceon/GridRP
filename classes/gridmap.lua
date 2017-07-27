@@ -26,23 +26,30 @@ local gridmap = {
 
 function gridmap:getTileX(xin)
 
-    return((xin-self.x)*self.TILE_WIDTH*self.scale)+self.PORT_X_IN
+    return ((xin-gridmap.x)*gridmap.TILE_WIDTH*gridmap.scale)+gridmap.PORT_X_IN
 
 end
 
 function gridmap:getTileY(yin)
 
-    return ((yin-self.y)*self.TILE_WIDTH*self.scale)+self.PORT_Y_IN
+    return ((yin-gridmap.y)*gridmap.TILE_WIDTH*gridmap.scale)+gridmap.PORT_Y_IN
 
 end
 
 function gridmap:drawMap(area)
 
-    for x=self.x,self.x+self.portWidth,1 do
-        for y=self.y,self.y+self.portHeight,1 do
-            if(x>=0 and x<=self.mapWidth and y>=0 and y<=self.mapHeight) then
-                love.graphics.draw(area[x][y].img,gridmap.getTileX(x),self.getTileY(y),
-                area[x][y].rot,self.scale)
+    startx = gridmap.x
+    starty = gridmap.y
+
+    for x=startx,startx+gridmap.portWidth,1 do
+
+        for y=starty,starty+gridmap.portHeight,1 do
+
+            if(x>=0 and x<=gridmap.mapWidth and y>=0 and y<=gridmap.mapHeight) then
+                
+                love.graphics.draw(area[x][y].img,gridmap:getTileX(x),gridmap:getTileY(y),
+                area[x][y].rot,gridmap.scale)
+
             end
         end
     end
@@ -50,31 +57,31 @@ end
 
 function gridmap:update(dt,ticks)
 
-    if love.keyboard.isDown("=") and self.scale < 2 then
-        self.scale = self.scale + 0.5 * dt
-        self.portHeight = math.ceil(self.portBaseHeight/self.scale) + 1/self.scale
-        self.portWidth = math.ceil(self.portBaseWidth/self.scale) + 1/self.scale
+    if love.keyboard.isDown("=") and gridmap.scale < 2 then
+        gridmap.scale = gridmap.scale + 0.5 * dt
+        gridmap.portHeight = math.ceil(gridmap.portBaseHeight/gridmap.scale) + 1/gridmap.scale
+        gridmap.portWidth = math.ceil(gridmap.portBaseWidth/gridmap.scale) + 1/gridmap.scale
 
-    elseif love.keyboard.isDown("-") and scale_factor > 0.2 then
+    elseif love.keyboard.isDown("-") and gridmap.scale > 0.2 then
         
-        self.scale = self.scale - 0.5*dt
-        self.portHeight = math.ceil(self.portBaseHeight/self.scale) + 1/self.scale
-        self.portWidth = math.ceil(self.portBaseWidth/self.scale) + 1/self.scale
+        gridmap.scale = gridmap.scale - 0.5*dt
+        gridmap.portHeight = math.ceil(gridmap.portBaseHeight/gridmap.scale) + 1/gridmap.scale
+        gridmap.portWidth = math.ceil(gridmap.portBaseWidth/gridmap.scale) + 1/gridmap.scale
     end
 
     if (ticks <=0.01) then
         if love.keyboard.isDown("up") then
-            self.porty = porty-(1)
+            gridmap.y = gridmap.y-(1)
             ticks = 0.1
         elseif love.keyboard.isDown("down") then
-            self.porty = porty+(1)
+            gridmap.y = gridmap.y+(1)
             ticks = 0.1
         end
         if love.keyboard.isDown("left") then
-            self.portx = portx-(1)
+            gridmap.x = gridmap.x-(1)
             ticks = 0.1
         elseif love.keyboard.isDown("right") then
-            self.portx = portx+(1)
+            gridmap.x = gridmap.x+(1)
             ticks = 0.1
         end
     elseif ticks >0 then
