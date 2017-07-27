@@ -11,6 +11,7 @@
 
 tile = require 'classes.tile'
 gridmap = require 'classes.gridmap'
+vpane = require 'classes.vpane'
 
 WINDOW_WIDTH = 1600
 WINDOW_HEIGHT = 900
@@ -38,6 +39,11 @@ function getNearestBlock(x,y,startx,starty) --nearest block coord to point
 end
 
 function love.load(arg)
+
+    gridmap.portBaseWidth = 8
+    gridmap.portBaseHeight = 5
+    gridmap.mapWidth = 256
+    gridmap.mapHeight=256
 
     board = {}
     testimg = love.graphics.newImage("assets/tiles/floors/plainGrass.png")
