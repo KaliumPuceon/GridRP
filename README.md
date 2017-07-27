@@ -56,6 +56,6 @@ Grid RP is written in [Lua](https://www.lua.org/) using the [LÖVE2D](https://lo
 framework. This is cool because it's good for cross-platform distribution and 
 it's also inherently open source, because the executable is just a zip of the folder. 
 
-#Disclaimer
+# Disclaimer
 I am not a very good programmer, and there's probably some wild errors in bits of
 this. Please let me know, I guess?
