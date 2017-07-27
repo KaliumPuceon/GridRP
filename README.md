@@ -1,4 +1,4 @@
-#Grid RP
+# Grid RP
 
 Grid RP is my homemade response to various digital tabletop RPG systems. There's
 all kinds of things like [Roll20](https://roll20.net/) and 
@@ -10,7 +10,7 @@ sheet management and more. That's more than I need and it makes the learning cur
 far too steep for my liking. So, I could either sit down and learn Roll20, or I 
 could make this. Guess which one I chose.
 
-#Installing and Running
+# Installing and Running
 Install [Lua](https://www.lua.org/) and [LÖVE2D](https://love2d.org), then run
 ```
 git clone https://github.com/KaliumPuceon/GridRP.git
@@ -20,7 +20,19 @@ love .
 to run the program. Once this is up to scratch I'll also put down executables
 you can download, but right now this is firmly in dev-land.
 
-#Basic Idea and Intention
+# Controls
+
+Use the arrow keys to navigate the field
+
+Use - and = to zoom out and in
+
+Click a block to change it to void. (that's all it does right now)
+
+Use r to reload the tiles to blank
+
+Yes, it's limited. This isn't even in alpha. This is in cuneiform or something.
+
+# Basic Idea and Intention
 Grid RP is supposed to be a light, tile-based virtual tabletop. I play 3.5e, so
 this is built around the traditional one-inch square grids. The idea is to make
 a relatively simple but expandable tiling map system that makes drawing new maps
@@ -39,7 +51,7 @@ instead of providing a ton of extra cool tricks, it'll still rely on players
 actually keeping track of what is happening on the board, and giving the GM a lot
 of flexibility to do what they want.
 
-#Engine
+# Engine
 Grid RP is written in [Lua](https://www.lua.org/) using the [LÖVE2D](https://love2d.org/) 
 framework. This is cool because it's good for cross-platform distribution and 
 it's also inherently open source, because the executable is just a zip of the folder. 
