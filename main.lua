@@ -12,36 +12,8 @@
 tile = require 'classes.tile'
 gridmap = require 'classes.gridmap'
 
-panel1 = {
-
-    x = getPanelX,
-    y = 0,
-    buttonMesh = {}
-
-}
-
 WINDOW_WIDTH = 1600
 WINDOW_HEIGHT = 900
-
-function getPanelX()
-    return(portBaseWidth+1)*TILE_WIDTH
-end
-
-function getPanelY()
-    return(portBaseHeight+1)*TILE_WIDTH
-end
-
-function drawPanel1(x,y)
-
-    love.graphics.setColor(125,0,125)
-    love.graphics.rectangle("fill",x,y,WINDOW_WIDTH-x,getPanelY())
-    love.graphics.setColor(255,255,255)
-
-end
-
-function drawPanel2(x,y)
-
-end
 
 function getNearestCorner(x,y,startx,starty) --find nearest corner to point
 
@@ -56,9 +28,13 @@ end
 
 function getNearestBlock(x,y,startx,starty) --nearest block coord to point
 
-    return getNearestCorner(x-((gridmap.TILE_WIDTH*gridmap.scale)/2),y-((gridmap.TILE_WIDTH*gridmap.scale)/2)
-    ,startx,starty)
-    
+    return getNearestCorner(
+        x-((gridmap.TILE_WIDTH*gridmap.scale)/2),
+        y-((gridmap.TILE_WIDTH*gridmap.scale)/2),
+        startx,
+        starty
+        )
+
 end
 
 function love.load(arg)
@@ -97,13 +73,25 @@ end
 
 function love.update(dt)
 
-    corner = getNearestCorner(love.mouse.getX(),love.mouse.getY(),gridmap.x,gridmap.y)
+    corner = getNearestCorner(
+        love.mouse.getX(),
+        love.mouse.getY(),
+        gridmap.x,
+        gridmap.y
+    )
+
     cornerX = corner.xout
     cornerY = corner.yout
 
     cornerbug=("cornr: " .. tostring(cornerX).." ".. tostring(cornerY))
 
-    nearBlock = getNearestBlock(love.mouse.getX(),love.mouse.getY(),gridmap.x,gridmap.y)
+    nearBlock = getNearestBlock(
+        love.mouse.getX(),
+        love.mouse.getY(),
+        gridmap.x,
+        gridmap.y
+    )
+
     blockX = nearBlock.xout
     blockY = nearBlock.yout
 
@@ -135,7 +123,6 @@ end
 
 function love.draw(dt)
 
-
     love.graphics.setColor(50,50,50)
     love.graphics.rectangle("fill",0,0,WINDOW_WIDTH,WINDOW_HEIGHT)
     
@@ -147,15 +134,9 @@ function love.draw(dt)
     
     love.graphics.setColor(255,255,255)
 
-    
-
     love.graphics.setFont(unifont)
     
     -- next line is my garbage monolithic debug print in bright purple ---------
     love.graphics.print (  { {255,0,255} ,cornerbug .. "\n" .. blockbug .. "\n" .. scalebug .. "\n" .. fpsbug},20,20)
-
-    --drawPanel1(getPanelX(),0)
-
-    --love.graphics.rectangle("line",PORT_X_IN,PORT_Y_IN,(portBaseWidth+1)*TILE_WIDTH-PORT_Y_IN,(1+portBaseHeight)*TILE_WIDTH-PORT_Y_IN)
 
 end
