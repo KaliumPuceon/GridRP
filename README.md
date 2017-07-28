@@ -26,7 +26,9 @@ Use the arrow keys to navigate the field
 
 Use - and = to zoom out and in
 
-Click a block to change it to void. (that's all it does right now)
+left click a block to change it to void
+
+right click a block to change it back to grass
 
 Use r to reload the tiles to blank
 
