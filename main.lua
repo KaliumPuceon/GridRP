@@ -13,6 +13,7 @@ tile = require 'classes.tile'
 gridmap = require 'classes.gridmap'
 vpane = require 'classes.vpane'
 textButton = require 'classes.textButton'
+imgButton = require 'classes.imgButton'
 
 WINDOW_WIDTH = 1600
 WINDOW_HEIGHT = 900
@@ -41,7 +42,10 @@ end
 
 function love.load(arg)
 
-    gridmap.portBaseWidth = 8
+    selImg = love.graphics.newImage("assets/tiles/special/void.png")
+    altImg = love.graphics.newImage("assets/tiles/floors/plainGrass.png")
+
+    gridmap.portBaseWidth = 9
     gridmap.portBaseHeight = 5
     gridmap.mapWidth = 256
     gridmap.mapHeight=256
@@ -65,10 +69,8 @@ function love.load(arg)
     end
 
     ticks = 0
-
+    
 end
-
-selImg = love.graphics.newImage("assets/tiles/special/void.png")
 
 function sign(x)
     if x >= 0 then
@@ -109,16 +111,19 @@ function love.update(dt)
 
     scalebug=("scale: " .. tostring(gridmap.scale))
 
-    if love.mouse.isDown(1) and
-        blockX >= gridmap.x and
+    onGrid = (blockX >= gridmap.x and
         blockX <= gridmap.x+math.floor(gridmap.portWidth) and 
         blockY >= gridmap.y and 
         blockY <= gridmap.y+math.floor(gridmap.portHeight) and
         blockX >=0 and 
         blockY >= 0 and 
         blockX <= gridmap.mapWidth and 
-        blockY <= gridmap.mapHeight then
+        blockY <= gridmap.mapHeight) 
+
+    if love.mouse.isDown(1) and onGrid then
         board[blockX][blockY].img = selImg
+    elseif love.mouse.isDown(2) and onGrid then
+        board[blockX][blockY].img = altImg
     end
 
     if love.keyboard.isDown("r") then
