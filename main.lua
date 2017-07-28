@@ -12,6 +12,7 @@
 tile = require 'classes.tile'
 gridmap = require 'classes.gridmap'
 vpane = require 'classes.vpane'
+textButton = require 'classes.textButton'
 
 WINDOW_WIDTH = 1600
 WINDOW_HEIGHT = 900
@@ -79,9 +80,12 @@ end
 
 function love.update(dt)
 
+    mx = love.mouse.getX()
+    my = love.mouse.getY()
+
     corner = getNearestCorner(
-        love.mouse.getX(),
-        love.mouse.getY(),
+        mx, 
+        my, 
         gridmap.x,
         gridmap.y
     )
@@ -92,8 +96,8 @@ function love.update(dt)
     cornerbug=("cornr: " .. tostring(cornerX).." ".. tostring(cornerY))
 
     nearBlock = getNearestBlock(
-        love.mouse.getX(),
-        love.mouse.getY(),
+        mx,
+        my,
         gridmap.x,
         gridmap.y
     )
