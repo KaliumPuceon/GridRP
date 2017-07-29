@@ -9,11 +9,12 @@
 -- I'm gonna guess that globals are bad practice but I'm also gonna guess that I 
 -- don't actually care. 
 
+vpane = require 'classes.vpane'
 tile = require 'classes.tile'
 gridmap = require 'classes.gridmap'
-vpane = require 'classes.vpane'
 textButton = require 'classes.textButton'
 imgButton = require 'classes.imgButton'
+
 
 WINDOW_WIDTH = 1600
 WINDOW_HEIGHT = 900
@@ -69,6 +70,11 @@ function love.load(arg)
     end
 
     ticks = 0
+
+    testpane = vpane:new(gridmap:getpxWidth()+gridmap.PORT_X_IN,
+        gridmap.PORT_Y_IN,
+        WINDOW_WIDTH-gridmap:getpxWidth(),
+        WINDOW_HEIGHT)
     
 end
 
@@ -126,6 +132,20 @@ function love.update(dt)
         board[blockX][blockY].img = altImg
     end
 
+    if love.mouse.isDown(1) and not onGrid then
+        selection = testpane:getSelImg(mx,my)
+        if selection then
+            selImg = selection
+        end
+    end
+    
+    if love.mouse.isDown(2) and not onGrid then
+        selection = testpane:getSelImg(mx,my)
+        if selection then
+            altImg = selection
+        end
+    end
+
     if love.keyboard.isDown("r") then
         love.load()
     end
@@ -149,8 +169,10 @@ function love.draw(dt)
     
     love.graphics.setColor(255,255,255)
 
+    testpane:draw()
+
     love.graphics.setFont(unifont)
-    
+
     -- next line is my garbage monolithic debug print in bright purple ---------
     love.graphics.print (  { {255,0,255} ,cornerbug .. "\n" .. blockbug .. "\n" .. scalebug .. "\n" .. fpsbug},20,20)
 

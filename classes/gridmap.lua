@@ -14,10 +14,10 @@ local gridmap = {
     mapWidth = 32,
     mapHeight = 32,
 
-    portBaseHeight = 4,
-    portBaseWidth = 7,
-    portHeight = 4,
-    portWidth = 7,
+    portBaseHeight = 5,
+    portBaseWidth = 9,
+    portHeight = 5,
+    portWidth = 9,
 
     x = 0,
     y = 0
@@ -33,6 +33,18 @@ end
 function gridmap:getTileY(yin)
 
     return ((yin-gridmap.y)*gridmap.TILE_WIDTH*gridmap.scale)+gridmap.PORT_Y_IN
+
+end
+
+function gridmap:getpxWidth()
+
+    return (self.PORT_X_IN+(self.TILE_WIDTH*(self.portWidth+1)))
+
+end
+
+function gridmap:getpxHeight()
+
+    return (self.PORT_Y_IN+(self.TILE_WIDTH*(self.portHeight+1)))
 
 end
 
