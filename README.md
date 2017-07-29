@@ -26,11 +26,11 @@ Use the arrow keys to navigate the field
 
 Use - and = to zoom out and in
 
-left click a block to change it to void
+Use left and right mouse buttons to paint your selected and alt tiles to the map
 
-right click a block to change it back to grass
+Select your main and alt tiles from the palette using left and right click
 
-Use r to reload the tiles to blank
+Use r to reload the tiles to plain grass
 
 Yes, it's limited. This isn't even in alpha. This is in cuneiform or something.
 
