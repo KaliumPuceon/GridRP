@@ -18,7 +18,7 @@ token = require 'classes.token'
 
 WINDOW_WIDTH = 1600
 WINDOW_HEIGHT = 900
-
+--[[
 function getNearestCorner(x,y,startx,starty) --find nearest corner to point
 
     output = {
@@ -40,7 +40,7 @@ function getNearestBlock(x,y,startx,starty) --nearest block coord to point
         )
 
 end
-
+]]
 function love.load(arg)
 
     selImg = love.graphics.newImage("assets/tiles/special/void.png")
@@ -91,11 +91,9 @@ function love.update(dt)
     mx = love.mouse.getX()
     my = love.mouse.getY()
 
-    corner = getNearestCorner(
+    corner = gridmap:getNearestCorner(
         mx, 
-        my, 
-        gridmap.x,
-        gridmap.y
+        my 
     )
 
     cornerX = corner.xout
@@ -103,11 +101,9 @@ function love.update(dt)
 
     cornerbug=("cornr: " .. tostring(cornerX).." ".. tostring(cornerY))
 
-    nearBlock = getNearestBlock(
+    nearBlock = gridmap:getNearestBlock(
         mx,
-        my,
-        gridmap.x,
-        gridmap.y
+        my
     )
 
     blockX = nearBlock.xout
@@ -117,15 +113,8 @@ function love.update(dt)
 
     scalebug=("scale: " .. tostring(gridmap.scale))
 
-    onGrid = (blockX >= gridmap.x and
-        blockX <= gridmap.x+math.floor(gridmap.portWidth) and 
-        blockY >= gridmap.y and 
-        blockY <= gridmap.y+math.floor(gridmap.portHeight) and
-        blockX >=0 and 
-        blockY >= 0 and 
-        blockX <= gridmap.mapWidth and 
-        blockY <= gridmap.mapHeight) 
-
+    onGrid = gridmap:blockVisible(blockX,blockY)
+    
     if love.mouse.isDown(1) and onGrid then
         board[blockX][blockY].img = selImg
     elseif love.mouse.isDown(2) and onGrid then

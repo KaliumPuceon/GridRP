@@ -26,13 +26,15 @@ local gridmap = {
 
 function gridmap:getTileX(xin)
 
-    return ((xin-gridmap.x)*gridmap.TILE_WIDTH*gridmap.scale)+gridmap.PORT_X_IN
+    halfWide = math.floor(self.portWidth/2)
+    return ((xin-gridmap.x+halfWide)*gridmap.TILE_WIDTH*gridmap.scale)+gridmap.PORT_X_IN
 
 end
 
 function gridmap:getTileY(yin)
 
-    return ((yin-gridmap.y)*gridmap.TILE_WIDTH*gridmap.scale)+gridmap.PORT_Y_IN
+    halfHigh = math.floor(self.portHeight/2)
+    return ((yin-gridmap.y+halfHigh)*gridmap.TILE_WIDTH*gridmap.scale)+gridmap.PORT_Y_IN
 
 end
 
@@ -48,24 +50,28 @@ function gridmap:getpxHeight()
 
 end
 
-function getNearestCorner(mx,my) --find nearest corner to point
+function gridmap:getNearestCorner(mx,my) --find nearest corner to point
+    
+    startx = gridmap.x
+    starty = gridmap.y
+
+    halfWide = math.floor(self.portWidth/2)
+    halfHigh = math.floor(self.portHeight/2)
 
     output = {
-    xout = math.floor(((x-gridmap.PORT_X_IN)/(gridmap.TILE_WIDTH*gridmap.scale))+0.5)+startx,
-    yout = math.floor(((y-gridmap.PORT_Y_IN)/(gridmap.TILE_WIDTH*gridmap.scale))+0.5)+starty
+    xout = math.floor(((mx-gridmap.PORT_X_IN)/(gridmap.TILE_WIDTH*gridmap.scale))+0.5)+startx-halfWide,
+    yout = math.floor(((my-gridmap.PORT_Y_IN)/(gridmap.TILE_WIDTH*gridmap.scale))+0.5)+starty-halfHigh
     }
     
     return (output)
 
 end
 
-function getNearestBlock(mx,my) --nearest block coord to point
+function gridmap:getNearestBlock(mx,my) --nearest block coord to point
 
-    return getNearestCorner(
-        x-((gridmap.TILE_WIDTH*gridmap.scale)/2),
-        y-((gridmap.TILE_WIDTH*gridmap.scale)/2),
-        startx,
-        starty
+    return gridmap:getNearestCorner(
+        mx-((gridmap.TILE_WIDTH*gridmap.scale)/2),
+        my-((gridmap.TILE_WIDTH*gridmap.scale)/2)
         )
 end
 
@@ -92,6 +98,25 @@ function gridmap:drawMapMask(pane_width,pane_height)
 
 end
 
+function gridmap:blockVisible(bx,by)
+
+    halfWide = math.floor(self.portWidth/2)
+    halfHigh = math.floor(self.portHeight/2)
+
+    return (
+        bx >= self.x-halfWide and
+        bx <= self.x+halfWide and
+        by >= self.y-halfHigh and
+        by <= self.y+halfHigh and
+        bx >= 0 and
+        bx <= self.mapWidth and
+        by >= 0 and
+        by <= self.mapHeight
+        )
+
+
+end
+
 function gridmap:drawMap(area)
 
     startx = gridmap.x
@@ -100,11 +125,12 @@ function gridmap:drawMap(area)
     halfWide = math.floor(self.portWidth/2)
     halfHigh = math.floor(self.portHeight/2)
 
-    for x=startx,startx+gridmap.portWidth,1 do
+    for x=startx-halfWide,startx+gridmap.portWidth+halfWide,1 do
 
-        for y=starty,starty+gridmap.portHeight,1 do
+        for y=starty-halfHigh,starty+gridmap.portHeight+halfHigh,1 do
 
             if(x>=0 and x<=gridmap.mapWidth and y>=0 and y<=gridmap.mapHeight) then
+                
                 
                 love.graphics.draw(area[x][y].img,gridmap:getTileX(x),gridmap:getTileY(y),
                 area[x][y].rot,gridmap.scale)
