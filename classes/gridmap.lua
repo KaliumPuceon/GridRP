@@ -38,14 +38,35 @@ end
 
 function gridmap:getpxWidth()
 
-    return (self.PORT_X_IN+(self.TILE_WIDTH*(self.portWidth+1)))
+    return (self.PORT_X_IN+(self.TILE_WIDTH*(self.portBaseWidth+1)))
 
 end
 
 function gridmap:getpxHeight()
 
-    return (self.PORT_Y_IN+(self.TILE_WIDTH*(self.portHeight+1)))
+    return (self.PORT_Y_IN+(self.TILE_WIDTH*(self.portBaseHeight+1)))
 
+end
+
+function getNearestCorner(mx,my) --find nearest corner to point
+
+    output = {
+    xout = math.floor(((x-gridmap.PORT_X_IN)/(gridmap.TILE_WIDTH*gridmap.scale))+0.5)+startx,
+    yout = math.floor(((y-gridmap.PORT_Y_IN)/(gridmap.TILE_WIDTH*gridmap.scale))+0.5)+starty
+    }
+    
+    return (output)
+
+end
+
+function getNearestBlock(mx,my) --nearest block coord to point
+
+    return getNearestCorner(
+        x-((gridmap.TILE_WIDTH*gridmap.scale)/2),
+        y-((gridmap.TILE_WIDTH*gridmap.scale)/2),
+        startx,
+        starty
+        )
 end
 
 function gridmap:drawMapMask(pane_width,pane_height)
@@ -75,6 +96,9 @@ function gridmap:drawMap(area)
 
     startx = gridmap.x
     starty = gridmap.y
+
+    halfWide = math.floor(self.portWidth/2)
+    halfHigh = math.floor(self.portHeight/2)
 
     for x=startx,startx+gridmap.portWidth,1 do
 

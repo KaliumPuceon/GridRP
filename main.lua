@@ -14,7 +14,7 @@ tile = require 'classes.tile'
 gridmap = require 'classes.gridmap'
 textButton = require 'classes.textButton'
 imgButton = require 'classes.imgButton'
-
+token = require 'classes.token'
 
 WINDOW_WIDTH = 1600
 WINDOW_HEIGHT = 900
@@ -75,7 +75,7 @@ function love.load(arg)
         gridmap.PORT_Y_IN,
         WINDOW_WIDTH-gridmap:getpxWidth(),
         WINDOW_HEIGHT)
-    
+
 end
 
 function sign(x)

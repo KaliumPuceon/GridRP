@@ -31,6 +31,29 @@ vpane = setmetatable({ __baseclass = {} }, vpane_mt)
 textButton = require 'classes.textButton'
 imgButton = require 'classes.imgButton'
 
+function vpane:genBtnTab(imgList)
+
+    self.imgList = imgList
+    count = 0
+    imgWidth = 60
+    imgMargin = 1
+    imgBg = {255,255,255}
+
+    for ind,img in ipairs(self.imgList) do
+        
+        currImg = love.graphics.newImage(img)
+
+        ix = self.x+(math.floor(count%4)*imgWidth)
+        iy = self.y+(math.floor(count/4)*imgWidth)
+
+        table.insert(self.buttonList,imgButton:new(ix+30,iy,imgWidth,imgWidth,currImg,imgBg,imgMargin))
+        count = count + 1
+
+    end
+
+
+end
+
 function vpane:new(x,y,width,height)
 
     local out = {}
@@ -41,15 +64,15 @@ function vpane:new(x,y,width,height)
     out.y = y
     out.width = width
     out.height = height
-    out.imgList = {
+    out:genBtnTab({
         'assets/tiles/floors/plainGrass.png',
         'assets/tiles/floors/plainStone.png',
         'assets/tiles/walls/wallGrass.png',
         'assets/tiles/walls/wallStone.png',
         'assets/tiles/special/void.png',
         'assets/tiles/special/firepit.png'
-    }
-
+    })
+    --[[
     count = 0
     imgWidth = 60
     imgMargin = 1
@@ -66,7 +89,7 @@ function vpane:new(x,y,width,height)
         count = count + 1
 
     end
-
+    ]]
     return(out)
 
 end
